@@ -46,13 +46,13 @@ print("[INFO] starting video stream...")
 vs = VideoStream(src=0).start()
 time.sleep(5)
 fps = FPS().start()
-
+jcount=-1
 # loop over the frames from the video stream
 while True:
 	# grab the frame from the threaded video stream and resize it
 	# to have a maximum width of 500 pixels
 	frame = vs.read()
-	frame = imutils.resize(frame, width=500)
+	frame = imutils.resize(frame, width=300)
 	orig = frame.copy()
 
 	# prepare the frame for object detection by converting (1) it
@@ -63,8 +63,16 @@ while True:
 
 	# make predictions on the input frame
 	start = time.time()
-	results = model(frame)
-	end = time.time()
+	jcount+=1
+	if jcount%2==0:
+		results = model(frame)
+	
+		end = time.time()
+		df = results.pandas().xyxy[0]
+	else:
+		end = time.time()
+		continue
+	
 
     # # make three circles indicating the arm's range of motion
 	# cv2.circle(orig, (275, 445), 390, (0, 0, 255), 3, 8, 0)
@@ -73,7 +81,7 @@ while True:
 	# cv2.circle(orig, (275, 445), 315, (0, 0, 255), 3, 8, 0)
 	# cv2.circle(orig, (275, 445), 290, (0, 0, 255), 3, 8, 0)
 
-	df = results.pandas().xyxy[0]
+		
 
 	if df.empty:
 		continue
@@ -134,7 +142,7 @@ while True:
 		y = startY - 15 if startY - 15 > 15 else startY + 15
 		text = "{}: {:.2f}%".format(label, score * 100)
 		cv2.putText(orig, text, (int(startX), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)      
-
+		print("scoreeeeee",score)
 		# if the arm is done moving
 		if done == 1:	
 				
@@ -169,8 +177,8 @@ while True:
 				print(inputAngle);
 				s1.write(bytes('1', 'utf-8'))
 				s1.write(bytes(' 2', 'utf-8'))
-				s1.write(bytes(inputDistance, 'utf-8'))
-				s1.write(bytes(inputAngle, 'utf-8'))
+				# s1.write(bytes(inputDistance, 'utf-8'))
+				# s1.write(bytes(inputAngle, 'utf-8'))
 				stop = 1
 				done = 0
 			
@@ -181,8 +189,8 @@ while True:
 				print(inputAngle);
 				s1.write(bytes('1', 'utf-8'))
 				s1.write(bytes(' 3', 'utf-8'))
-				s1.write(bytes(inputDistance, 'utf-8'))
-				s1.write(bytes(inputAngle, 'utf-8'))
+				# s1.write(bytes(inputDistance, 'utf-8'))
+				# s1.write(bytes(inputAngle, 'utf-8'))
 				stop = 1
 				done = 0
 	
@@ -194,8 +202,8 @@ while True:
 				print(inputAngle);
 				s1.write(bytes('1', 'utf-8'))
 				s1.write(bytes(' 4', 'utf-8'))
-				s1.write(bytes(inputDistance, 'utf-8'))
-				s1.write(bytes(inputAngle, 'utf-8'))
+				# s1.write(bytes(inputDistance, 'utf-8'))
+				# s1.write(bytes(inputAngle, 'utf-8'))
 				stop = 1
 				done = 0
 			
@@ -206,9 +214,9 @@ while True:
 				print(inputDistance);
 				print(inputAngle);
 				s1.write(bytes('1', 'utf-8'))
-				s1.write(bytes(' 1 ', 'utf-8'))
-				s1.write(bytes(inputDistance, 'utf-8'))
-				s1.write(bytes(inputAngle, 'utf-8'))
+				s1.write(bytes(' 5', 'utf-8'))
+				# s1.write(bytes(inputDistance, 'utf-8'))
+				# s1.write(bytes(inputAngle, 'utf-8'))
 				stop = 1
 				done = 0
 		
